@@ -352,13 +352,22 @@ function showFlex(id)  { document.getElementById(id).style.display="flex"; }
 
 // ── Fetch PIB ─────────────────────────────────────────────────────────────────
 async function fetchWithFallback(url) {
-  for(const proxy of PROXIES){
-    try{
-      const res=await fetch(proxy(url),{signal:AbortSignal.timeout(12000)});
-      if(!res.ok) continue;
-      const json=await res.json();
-      const content=json.contents||json;
-      if(typeof content==="string") return content;
+  for (const proxy of PROXIES) {
+    try {
+      const res = await fetch(proxy(url), { signal: AbortSignal.timeout(12000) });
+      if (!res.ok) continue;
+
+      const contentType = res.headers.get("content-type") || "";
+      if (contentType.includes("application/json")) {
+        // allorigins style — returns { contents: "..." }
+        const json = await res.json();
+        const content = json.contents || json;
+        if (typeof content === "string" && content.length > 100) return content;
+      } else {
+        // Cloudflare Worker returns plain XML directly
+        const text = await res.text();
+        if (text && text.length > 100) return text;
+      }
     } catch {}
   }
   throw new Error("All proxies failed — PIB RSS temporarily unavailable. Please try again in a moment.");
