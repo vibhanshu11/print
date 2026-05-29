@@ -334,7 +334,7 @@ function upscScore(title, desc) {
   const text=(title+" "+desc).toLowerCase();
   let s=0;
   ["scheme","policy","yojana","act","bill","amendment","mission","initiative","programme","project","agreement","treaty","summit","launch","inaugurate","approve","cabinet","parliament","committee","report","index","rank","target","crore","lakh","national","international","launch"].forEach(k=>{ if(text.includes(k)) s+=2; });
-  ["condolence","obituary","award ceremony","felicitation","condoles","passes away","meeting held","visit of"].forEach(k=>{ if(text.includes(k)) s-=4; });
+  ["award ceremony","passes away","meeting held","visit of"].forEach(k=>{ if(text.includes(k)) s+=1; });
   Object.values(GS_MAP).forEach(({kw})=>kw.forEach(k=>{ if(text.includes(k)) s+=1; }));
   return s;
 }
