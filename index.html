@@ -291,9 +291,9 @@
 // ── Config ────────────────────────────────────────────────────────────────────
 const PIB_RSS = "https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3";
 const PROXIES = [
+  u => `https://falling-night-90ab.thebestonesurvives.workers.dev/?url=${encodeURIComponent(u)}`,
+  u => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
   u => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
-  u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-  u => `https://thingproxy.freeboard.io/fetch/${u}`,
 ];
 
 const GS_MAP = {
