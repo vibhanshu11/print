@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PIB UPSC Daily Digest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ── Reset ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ── Screen styles ── */
+  body {
+    background: #f5f0e6;
+    font-family: 'Libre Baskerville', Georgia, serif;
+    color: #1a1209;
+    min-height: 100vh;
+  }
+
+  /* ── Masthead ── */
+  #masthead {
+    background: #1a1209;
+    color: #f5f0e6;
+    text-align: center;
+    padding: 1.2rem 2rem 0.9rem;
+    border-bottom: 4px double #c8a96e;
+  }
+  #masthead .sub {
+    font-size: 0.55rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: #c8a96e;
+    margin-bottom: 0.3rem;
+  }
+  #masthead h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    color: #f5f0e6;
+  }
+  #masthead .meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid #4a3f2a;
+    font-size: 0.6rem;
+    color: #a89060;
+    letter-spacing: 0.06em;
+  }
+  #masthead .meta span.hl { color: #c8a96e; }
+
+  /* ── Nav bar ── */
+  #nav {
+    background: #1a1209;
+    display: flex;
+    overflow-x: auto;
+    border-bottom: 2px solid #c8a96e;
+  }
+  #nav button {
+    padding: 0.38rem 0.9rem;
+    background: transparent;
+    color: #c8a96e;
+    border: none;
+    cursor: pointer;
+    font-size: 0.55rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    font-family: 'Libre Baskerville', serif;
+    transition: background 0.15s, color 0.15s;
+  }
+  #nav button.active { background: #c8a96e; color: #1a1209; font-weight: bold; }
+  #nav button#print-btn {
+    margin-left: auto;
+    background: #c8a96e;
+    color: #1a1209;
+    font-weight: bold;
+  }
+
+  /* ── Main area ── */
+  #app { max-width: 960px; margin: 0 auto; padding: 1.4rem 2rem 3rem; }
+
+  /* ── Landing ── */
+  #landing { text-align: center; padding: 3.5rem 1rem; }
+  #landing h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    margin-bottom: 0.7rem;
+  }
+  #landing p { color: #5a4a30; font-size: 0.85rem; max-width: 500px; margin: 0 auto 0.8rem; line-height: 1.85; }
+  #landing .tags {
+    display: flex; flex-wrap: wrap; justify-content: center;
+    gap: 0.5rem; margin: 1rem 0 2rem; font-size: 0.7rem; color: #7a6a4a;
+  }
+  #gen-btn {
+    background: #1a1209; color: #c8a96e;
+    border: 2px solid #c8a96e;
+    padding: 0.85rem 2.6rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+  }
+  #gen-btn:hover { background: #c8a96e; color: #1a1209; }
+
+  /* ── Loader ── */
+  #loader { text-align: center; padding: 4rem 1rem; display: none; }
+  #loader h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 1.2rem; }
+  #progress-bar { background: #d9cdb8; height: 5px; max-width: 460px; margin: 0 auto 0.7rem; }
+  #progress-fill { background: #8B0000; height: 100%; width: 0%; transition: width 0.5s; }
+  #progress-pct { font-size: 0.72rem; color: #7a6a4a; }
+
+  /* ── Error ── */
+  #error-box {
+    background: #fff8f8; border: 1px solid #e8c0c0;
+    padding: 1.5rem; margin: 2rem 0; color: #800; display: none;
+  }
+  #retry-btn {
+    margin-top: 1rem; background: #1a1209; color: #f5f0e6;
+    border: none; padding: 0.5rem 1.2rem; cursor: pointer;
+  }
+
+  /* ── Digest ── */
+  #digest { display: none; }
+
+  .stats-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 3px double #1a1209; border-bottom: 1px solid #c8b89a;
+    padding: 0.5rem 0; margin-bottom: 1.2rem;
+    font-size: 0.65rem; color: #5a4a30; flex-wrap: wrap; gap: 0.4rem;
+  }
+
+  .gs-legend { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.2rem; }
+  .gs-badge {
+    font-size: 0.58rem; padding: 0.15rem 0.5rem;
+    color: #fff; letter-spacing: 0.04em;
+  }
+
+  /* ── Section ── */
+  .gs-section { margin-bottom: 1.5rem; }
+  .gs-header {
+    padding: 0.25rem 0; margin-bottom: 0.8rem;
+  }
+  .gs-header span {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.6rem; font-weight: 700;
+    letter-spacing: 0.25em; text-transform: uppercase;
+  }
+
+  .articles-grid { columns: 2; column-gap: 1.5rem; }
+  .articles-grid.single { columns: 1; }
+
+  /* ── Article card ── */
+  .article-card {
+    break-inside: avoid;
+    border-bottom: 1px solid #d9cdb8;
+    padding-bottom: 0.8rem;
+    margin-bottom: 0.8rem;
+  }
+  .article-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 0.25rem;
+  }
+  .why-upsc {
+    font-size: 0.63rem;
+    font-style: italic;
+    margin-bottom: 0.3rem;
+    line-height: 1.4;
+    color: #8B0000;
+  }
+  .why-upsc::before { content: "▶ "; }
+  .key-facts {
+    padding-left: 1rem;
+    margin-bottom: 0.35rem;
+  }
+  .key-facts li {
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: #2a2015;
+  }
+  .mains-angle {
+    font-size: 0.63rem;
+    background: #f0ebe0;
+    padding: 0.2rem 0.5rem;
+    line-height: 1.5;
+    color: #3a2e1a;
+    border-left: 3px solid #888;
+  }
+  .mains-angle strong { font-weight: 700; }
+
+  /* ── Digest footer ── */
+  .digest-footer {
+    border-top: 3px double #1a1209;
+    margin-top: 1.5rem; padding-top: 0.6rem;
+    display: flex; justify-content: space-between;
+    font-size: 0.58rem; color: #7a6a4a; letter-spacing: 0.04em;
+  }
+
+  /* ── Print styles ── */
+  @media print {
+    body { background: #fff !important; font-size: 10.5px; }
+    #masthead { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    #nav, #landing, #loader, #error-box, #gen-btn { display: none !important; }
+    #digest { display: block !important; }
+    #app { padding: 0; max-width: 100%; }
+    .gs-badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .mains-angle { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    @page { margin: 1.1cm; size: A4 portrait; }
+    .article-card { break-inside: avoid; }
+    .gs-section { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Masthead ── -->
+<div id="masthead">
+  <div class="sub">Press Information Bureau · Government of India · Daily UPSC Briefing</div>
+  <h1>THE PIB UPSC DIGEST</h1>
+  <div class="meta">
+    <span>GS Papers I · II · III · IV</span>
+    <span class="hl" id="edition-dates">Loading date…</span>
+    <span>Prelims + Mains Oriented</span>
+  </div>
+</div>
+
+<!-- ── Nav ── -->
+<div id="nav" style="display:none;">
+  <button class="active" data-gs="ALL">All</button>
+  <button id="print-btn" onclick="window.print()">🖨 Print / PDF</button>
+</div>
+
+<!-- ── App ── -->
+<div id="app">
+
+  <!-- Landing -->
+  <div id="landing">
+    <h2>Daily PIB · UPSC Filter</h2>
+    <p>Fetches yesterday's PIB releases, <strong>scores each for UPSC relevance</strong>, drops the noise, and gives you a <strong>crisp 2–3 page briefing</strong> mapped to GS papers — with key facts and Mains angles ready to use.</p>
+    <div class="tags">
+      <span>✅ Polity &amp; Governance</span>
+      <span>✅ Economy &amp; Budget</span>
+      <span>✅ Environment &amp; Ecology</span>
+      <span>✅ Science &amp; Tech</span>
+      <span>✅ International Relations</span>
+      <span>✅ Social Issues</span>
+    </div>
+    <button id="gen-btn" onclick="generate()">Generate Today's UPSC Digest</button>
+  </div>
+
+  <!-- Loader -->
+  <div id="loader">
+    <h3 id="log-text">Starting…</h3>
+    <div id="progress-bar"><div id="progress-fill"></div></div>
+    <div id="progress-pct">0%</div>
+  </div>
+
+  <!-- Error -->
+  <div id="error-box">
+    <strong>⚠ Error:</strong> <span id="error-msg"></span>
+    <br>
+    <button id="retry-btn" onclick="generate()">↺ Try Again</button>
+  </div>
+
+  <!-- Digest output -->
+  <div id="digest">
+    <div class="stats-bar">
+      <span><strong id="count-relevant">0</strong> UPSC-relevant items · <span id="count-total">0</span> total fetched</span>
+      <span id="releases-date" style="font-style:italic;"></span>
+      <span>🖨 Print → Save as PDF for A4 output</span>
+    </div>
+    <div class="gs-legend" id="gs-legend"></div>
+    <div id="sections-container"></div>
+    <div class="digest-footer">
+      <span>THE PIB UPSC DIGEST · <span id="footer-today"></span></span>
+      <span>pib.gov.in · UPSC-filtered by Claude AI · For study purposes only</span>
+      <span>Prelims + Mains</span>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+// ── Config ────────────────────────────────────────────────────────────────────
+const PIB_RSS = "https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3";
+const PROXIES = [
+  u => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
+  u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+  u => `https://thingproxy.freeboard.io/fetch/${u}`,
+];
+
+const GS_MAP = {
+  "GS2 — Polity & Governance":  { col:"#1b2a4a", kw:["constitution","parliament","cabinet","minister","policy","scheme","yojana","governance","law","act","amendment","judiciary","bill","federal","state","election","committee","regulation","tribunal","panchayat","lokpal","rti","lokayukta"] },
+  "GS2 — IR & International":   { col:"#2c4a6e", kw:["bilateral","multilateral","treaty","agreement","summit","foreign","international","un ","who","wto","g20","g7","brics","sco","asean","nato","imf","world bank","diplomatic","ambassador"] },
+  "GS3 — Economy":              { col:"#7a3b00", kw:["economy","gdp","inflation","budget","tax","rbi","bank","investment","trade","export","import","rupee","fiscal","monetary","msme","startup","fdi","revenue","finance","market","insurance","credit","sebi","niti aayog"] },
+  "GS3 — Agriculture":          { col:"#2d6a4f", kw:["agriculture","farmer","crop","kisan","irrigation","fertilizer","msp","harvest","horticulture","fisheries","food security","pm-kisan","fasal bima","soil","seed","agri","animal husbandry","dairy"] },
+  "GS3 — Science & Tech":       { col:"#0a3d62", kw:["science","technology","space","isro","research","innovation","artificial intelligence","satellite","cyber","5g","quantum","nuclear","drdo","patent","biotechnology","genome","robot","semiconductor","drone"] },
+  "GS3 — Environment":          { col:"#1b4332", kw:["environment","climate","pollution","forest","wildlife","solar","renewable","carbon","emission","conservation","biodiversity","wetland","coral","glacier","plastic","waste","national park","tiger","elephant","ramsar","cop"] },
+  "GS3 — Security & Defence":   { col:"#3d1a00", kw:["defence","army","navy","air force","military","security","border","weapon","missile","soldier","drdo","coast guard","internal security","naxal","terror","cyber security","paramilitary"] },
+  "GS1 — Society & Culture":    { col:"#6b3a2a", kw:["society","culture","heritage","women","tribal","religion","caste","festival","history","geography","social issue","art","architecture","tradition","diversity","gender","literacy","population"] },
+  "GS4 — Ethics & Welfare":     { col:"#4a1048", kw:["ethics","integrity","transparency","accountability","social justice","disability","inclusion","minority","welfare","empowerment","grievance","corruption","whistleblower","ombudsman","probity"] },
+};
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function yesterday() { const d=new Date(); d.setDate(d.getDate()-1); return d; }
+function fmtShort(d) { return d.toLocaleDateString("en-IN",{day:"numeric",month:"long",year:"numeric"}); }
+function fmtFull(d)  { return d.toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"}); }
+
+function isRecent(dateStr) {
+  try {
+    const d=new Date(dateStr), y=yesterday();
+    return d.getDate()===y.getDate() && d.getMonth()===y.getMonth() && d.getFullYear()===y.getFullYear();
+  } catch { return false; }
+}
+
+function categorize(title, desc) {
+  const text=(title+" "+desc).toLowerCase();
+  let best="GS2 — Polity & Governance", bestN=0;
+  for(const [gs,{kw}] of Object.entries(GS_MAP)){
+    const n=kw.filter(k=>text.includes(k)).length;
+    if(n>bestN){bestN=n;best=gs;}
+  }
+  return best;
+}
+
+function upscScore(title, desc) {
+  const text=(title+" "+desc).toLowerCase();
+  let s=0;
+  ["scheme","policy","yojana","act","bill","amendment","mission","initiative","programme","project","agreement","treaty","summit","launch","inaugurate","approve","cabinet","parliament","committee","report","index","rank","target","crore","lakh","national","international","launch"].forEach(k=>{ if(text.includes(k)) s+=2; });
+  ["condolence","obituary","award ceremony","felicitation","condoles","passes away","meeting held","visit of"].forEach(k=>{ if(text.includes(k)) s-=4; });
+  Object.values(GS_MAP).forEach(({kw})=>kw.forEach(k=>{ if(text.includes(k)) s+=1; }));
+  return s;
+}
+
+// ── UI helpers ────────────────────────────────────────────────────────────────
+function setLog(msg) { document.getElementById("log-text").textContent=msg; }
+function setProgress(p) {
+  document.getElementById("progress-fill").style.width=p+"%";
+  document.getElementById("progress-pct").textContent=p+"%";
+}
+function show(id) { document.getElementById(id).style.display=""; }
+function hide(id) { document.getElementById(id).style.display="none"; }
+function showBlock(id) { document.getElementById(id).style.display="block"; }
+function showFlex(id)  { document.getElementById(id).style.display="flex"; }
+
+// ── Fetch PIB ─────────────────────────────────────────────────────────────────
+async function fetchWithFallback(url) {
+  for(const proxy of PROXIES){
+    try{
+      const res=await fetch(proxy(url),{signal:AbortSignal.timeout(12000)});
+      if(!res.ok) continue;
+      const json=await res.json();
+      const content=json.contents||json;
+      if(typeof content==="string") return content;
+    } catch {}
+  }
+  throw new Error("All proxies failed — PIB RSS temporarily unavailable. Please try again in a moment.");
+}
+
+async function fetchArticles() {
+  setLog("📡 Connecting to PIB RSS…");
+  const xmlStr=await fetchWithFallback(PIB_RSS);
+  setLog("✅ Feed received — parsing…");
+  const parser=new DOMParser();
+  const xml=parser.parseFromString(xmlStr,"text/xml");
+  if(xml.querySelector("parsererror")) throw new Error("Could not parse PIB feed XML.");
+  const items=Array.from(xml.querySelectorAll("item"));
+  if(!items.length) throw new Error("No articles found in PIB feed.");
+
+  const all=items.map(item=>({
+    title: item.querySelector("title")?.textContent?.replace(/<[^>]+>/g,"").trim()||"",
+    description: item.querySelector("description")?.textContent?.replace(/<[^>]+>/g,"").trim()||"",
+    link: item.querySelector("link")?.textContent?.trim()||"",
+    pubDate: item.querySelector("pubDate")?.textContent?.trim()||"",
+  })).filter(a=>a.title);
+
+  let pool=all.filter(a=>isRecent(a.pubDate));
+  if(pool.length<3) pool=all.slice(0,40);
+
+  const scored=pool
+    .map(a=>({...a, score:upscScore(a.title,a.description), gs:categorize(a.title,a.description)}))
+    .filter(a=>a.score>1)
+    .sort((a,b)=>b.score-a.score)
+    .slice(0,18);
+
+  setLog(`📋 ${pool.length} releases → ${scored.length} UPSC-relevant selected…`);
+  return scored;
+}
+
+// ── Claude summarise ──────────────────────────────────────────────────────────
+async function summariseWithClaude(articles) {
+  setLog("🤖 Claude AI is summarising for UPSC…");
+  const input=articles.map((a,i)=>
+    `[${i}] GS: ${a.gs}\nTitle: ${a.title}\nContent: ${a.description.substring(0,400)}`
+  ).join("\n\n");
+
+  const prompt=`You are an expert UPSC CSE mentor preparing a daily PIB briefing for serious aspirants.
+
+For each press release, extract ONLY what matters for UPSC Prelims + Mains.
+
+Return ONLY a valid JSON array (no markdown, no explanation):
+[
+  {
+    "id": 0,
+    "headline": "Short crisp headline (max 12 words)",
+    "gs": "GS paper label",
+    "why_upsc": "One line why this matters for UPSC — which topic/concept it tests",
+    "key_facts": ["fact with number/name (max 15 words)", "fact 2", "fact 3"],
+    "mains_angle": "One sentence on how to use this in a Mains answer",
+    "low_relevance": false
+  }
+]
+
+Rules:
+- key_facts: max 3 bullets, each under 15 words, include specific numbers/names
+- No fluff — only exam-worthy facts
+- If a release has zero UPSC relevance, set low_relevance: true
+
+Releases:
+${input}`;
+
+  const res=await fetch("https://api.anthropic.com/v1/messages",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      model:"claude-sonnet-4-20250514",
+      max_tokens:1000,
+      messages:[{role:"user",content:prompt}],
+    }),
+  });
+  if(!res.ok) throw new Error(`Claude API error ${res.status} — check your connection.`);
+  const data=await res.json();
+  const text=data.content?.map(b=>b.text||"").join("")||"[]";
+  try{ return JSON.parse(text.replace(/```json|```/g,"").trim()); }
+  catch{ throw new Error("Could not parse Claude response. Please retry."); }
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function renderDigest(articles, expanded) {
+  // Build lookup
+  const map={};
+  expanded.forEach(e=>{ if(articles[e.id]) map[articles[e.id].title]=e; });
+
+  // Group by GS
+  const grouped={};
+  articles.forEach(a=>{
+    const e=map[a.title];
+    if(e?.low_relevance) return;
+    const gs=e?.gs||a.gs;
+    if(!grouped[gs]) grouped[gs]=[];
+    grouped[gs].push({article:a, exp:e});
+  });
+
+  const gsList=Object.keys(grouped);
+  const totalRelevant=Object.values(grouped).reduce((s,arr)=>s+arr.length,0);
+
+  // Stats
+  document.getElementById("count-relevant").textContent=totalRelevant;
+  document.getElementById("count-total").textContent=articles.length;
+  document.getElementById("releases-date").textContent="Releases of "+fmtFull(yesterday());
+  document.getElementById("footer-today").textContent=fmtShort(new Date());
+  document.getElementById("edition-dates").textContent=
+    "Releases: "+fmtShort(yesterday())+" · Edition: "+fmtShort(new Date());
+
+  // Legend
+  const legend=document.getElementById("gs-legend");
+  legend.innerHTML="";
+  gsList.forEach(gs=>{
+    const col=GS_MAP[gs]?.col||"#555";
+    const span=document.createElement("span");
+    span.className="gs-badge";
+    span.style.background=col;
+    span.textContent=gs;
+    legend.appendChild(span);
+  });
+
+  // Nav buttons
+  const nav=document.getElementById("nav");
+  // Remove old gs buttons (keep ALL and Print)
+  nav.querySelectorAll("button[data-gs]").forEach(b=>b.remove());
+  const printBtn=document.getElementById("print-btn");
+  gsList.forEach(gs=>{
+    const btn=document.createElement("button");
+    btn.setAttribute("data-gs",gs);
+    btn.textContent=gs.replace("GS1 — ","").replace("GS2 — ","").replace("GS3 — ","").replace("GS4 — ","");
+    btn.onclick=()=>filterSection(gs);
+    nav.insertBefore(btn,printBtn);
+  });
+
+  // Sections
+  const container=document.getElementById("sections-container");
+  container.innerHTML="";
+  gsList.forEach(gs=>{
+    const col=GS_MAP[gs]?.col||"#1a1209";
+    const items=grouped[gs];
+
+    const sec=document.createElement("div");
+    sec.className="gs-section";
+    sec.setAttribute("data-gs-section",gs);
+
+    const hdr=document.createElement("div");
+    hdr.className="gs-header";
+    hdr.style.borderTop=`3px solid ${col}`;
+    hdr.style.borderBottom=`1px solid ${col}`;
+    hdr.innerHTML=`<span style="color:${col}">${gs}</span>`;
+    sec.appendChild(hdr);
+
+    const grid=document.createElement("div");
+    grid.className="articles-grid"+(items.length<=2?" single":"");
+    items.forEach(({article,exp})=>{
+      grid.appendChild(makeCard(article,exp,col));
+    });
+    sec.appendChild(grid);
+    container.appendChild(sec);
+  });
+
+  showFlex("nav");
+  showBlock("digest");
+}
+
+function makeCard(article, exp, col) {
+  const card=document.createElement("div");
+  card.className="article-card";
+
+  const h3=document.createElement("h3");
+  h3.textContent=exp?.headline||article.title;
+  card.appendChild(h3);
+
+  if(exp?.why_upsc){
+    const why=document.createElement("div");
+    why.className="why-upsc";
+    why.textContent=exp.why_upsc;
+    card.appendChild(why);
+  }
+
+  const facts=exp?.key_facts||[article.description.substring(0,120)];
+  if(facts.length){
+    const ul=document.createElement("ul");
+    ul.className="key-facts";
+    facts.forEach(f=>{
+      const li=document.createElement("li");
+      li.textContent=f;
+      ul.appendChild(li);
+    });
+    card.appendChild(ul);
+  }
+
+  if(exp?.mains_angle){
+    const m=document.createElement("div");
+    m.className="mains-angle";
+    m.style.borderLeftColor=col;
+    m.innerHTML=`<strong>Mains:</strong> ${exp.mains_angle}`;
+    card.appendChild(m);
+  }
+
+  return card;
+}
+
+function filterSection(gs) {
+  document.querySelectorAll("#nav button[data-gs]").forEach(b=>{
+    b.classList.toggle("active", b.getAttribute("data-gs")===(gs||"ALL"));
+  });
+  document.querySelectorAll(".gs-section").forEach(sec=>{
+    sec.style.display=(gs==="ALL"||sec.getAttribute("data-gs-section")===gs)?"":"none";
+  });
+}
+
+// Set ALL active on click
+document.querySelector("#nav button[data-gs='ALL']")?.addEventListener("click",()=>filterSection("ALL"));
+
+// ── Main generate ─────────────────────────────────────────────────────────────
+async function generate() {
+  hide("landing"); hide("error-box"); hide("digest"); hide("nav");
+  showBlock("loader");
+  setProgress(5);
+
+  try {
+    const articles=await fetchArticles();
+    setProgress(40);
+    const expanded=await summariseWithClaude(articles);
+    setProgress(95);
+    setLog("✅ Done! Rendering digest…");
+
+    setTimeout(()=>{
+      hide("loader");
+      renderDigest(articles,expanded);
+      setProgress(100);
+    },300);
+
+  } catch(e) {
+    hide("loader");
+    document.getElementById("error-msg").textContent=e.message;
+    showBlock("error-box");
+  }
+}
+
+// ── Init dates ────────────────────────────────────────────────────────────────
+document.getElementById("edition-dates").textContent=
+  "Releases: "+fmtShort(yesterday())+" · Edition: "+fmtShort(new Date());
+</script>
+</body>
+</html>
