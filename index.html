@@ -405,12 +405,12 @@ async function fetchArticles() {
 
 // ── Claude summarise ──────────────────────────────────────────────────────────
 async function summariseWithClaude(articles) {
-  setLog("🤖 Claude AI is summarising for UPSC…");
-  const input=articles.map((a,i)=>
-    `[${i}] GS: ${a.gs}\nTitle: ${a.title}\nContent: ${a.description.substring(0,400)}`
+  setLog("🤖 GPT-4o is summarising for UPSC…");
+  const input = articles.map((a, i) =>
+    `[${i}] GS: ${a.gs}\nTitle: ${a.title}\nContent: ${a.description.substring(0, 400)}`
   ).join("\n\n");
 
-  const prompt=`You are an expert UPSC CSE mentor preparing a daily PIB briefing for serious aspirants.
+  const prompt = `You are an expert UPSC CSE mentor preparing a daily PIB briefing for serious aspirants.
 
 For each press release, extract ONLY what matters for UPSC Prelims + Mains.
 
@@ -427,30 +427,23 @@ Return ONLY a valid JSON array (no markdown, no explanation):
   }
 ]
 
-Rules:
-- key_facts: max 3 bullets, each under 15 words, include specific numbers/names
-- No fluff — only exam-worthy facts
-- If a release has zero UPSC relevance, set low_relevance: true
-
 Releases:
 ${input}`;
 
-  const res=await fetch("https://api.anthropic.com/v1/messages",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      model:"claude-sonnet-4-20250514",
-      max_tokens:1000,
-      messages:[{role:"user",content:prompt}],
+  const res = await fetch("https://falling-night-90ab.thebestonesurvives.workers.dev/ai", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      messages: [{ role: "user", content: prompt }]
     }),
   });
-  if(!res.ok) throw new Error(`Claude API error ${res.status} — check your connection.`);
-  const data=await res.json();
-  const text=data.content?.map(b=>b.text||"").join("")||"[]";
-  try{ return JSON.parse(text.replace(/```json|```/g,"").trim()); }
-  catch{ throw new Error("Could not parse Claude response. Please retry."); }
-}
 
+  if (!res.ok) throw new Error(`AI error ${res.status} — check your Worker.`);
+  const data = await res.json();
+  const text = data.choices?.[0]?.message?.content || "[]";
+  try { return JSON.parse(text.replace(/```json|```/g, "").trim()); }
+  catch { throw new Error("Could not parse GPT response. Please retry."); }
+}
 // ── Render ────────────────────────────────────────────────────────────────────
 function renderDigest(articles, expanded) {
   // Build lookup
